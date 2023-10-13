@@ -30,16 +30,15 @@ function createApp() {
         ],
     })
 
-    // security middleware
     app.use(hppH)
     app.use("/api", limiter);
-    app.use(express.json({ limit: "10kb" })); //body parser, reading data from body into req.body
+    app.use(express.json({ limit: "10kb" }));
     app.use(helmet());
-    app.use(cookieParser())             // Cookies
-    app.use(ExpressMongoSanitize());    // data sanitiztion against NoSQL query injection
-    app.use(xXssProtection());          // data sanitiztion against XSS
-    app.use(compression());             // compress requests
-    app.use(cors());             // compress requests
+    app.use(cookieParser());
+    app.use(ExpressMongoSanitize());
+    app.use(xXssProtection());
+    app.use(compression());
+    app.use(cors());
 
     // routes
 
