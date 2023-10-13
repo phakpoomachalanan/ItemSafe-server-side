@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { getChildren } from "../controller/node";
+import { Router } from "express"
+import { getChildren } from "../controller/node"
 
 const router = Router()
 
