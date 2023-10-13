@@ -20,3 +20,7 @@ export const findNode = (req, res, next) => {
 export const getChildren = (req, res, next) => {
     
 }
+
+export const getAttribute = (req, res, next) => {
+
+}
