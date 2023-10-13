@@ -22,6 +22,7 @@ export async function connectDb() {
 
     } finally {
         await session.close()
+        module.exports = driver
     }
 
     // on application exit:
