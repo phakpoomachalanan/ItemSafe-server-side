@@ -1,5 +1,6 @@
 import { Router } from "express"
-import { getChildren } from "../controller/node"
+import { getChildren } from "../controller/node.js"
+
 
 const router = Router()
 

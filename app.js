@@ -9,9 +9,15 @@ import xXssProtection from 'x-xss-protection'
 import cookieParser from "cookie-parser"
 import cors from 'cors'
 // Routes Import
+import authRoutes from './routes/auth.js'
+import nodeRoutes from './routes/node.js'
+import treeRoutes from './routes/tree.js'
+
 
 function createApp() {
     const app = express()
+
+    app.use(express.static('public'))
 
     const limiter = rateLimit({
         max: 100,
@@ -41,6 +47,9 @@ function createApp() {
     app.use(cors())
 
     // routes
+    app.use("/auth", authRoutes)
+    app.use("/node", nodeRoutes)
+    app.use("/tree", treeRoutes)
 
     return app
 }

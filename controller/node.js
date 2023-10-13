@@ -1,5 +1,6 @@
 import neo4j from 'neo4j-driver'
-import { driver } from '../util/connectDb.js'
+import driver from '../util/connectDb.js'
+
 
 export const createNode = (req, res, next) => {
 

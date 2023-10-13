@@ -1,8 +1,10 @@
-import neo4j from 'neo4j-driver'
+import neo4j, { driver } from 'neo4j-driver'
 import dotenv from 'dotenv'
 import { logger } from './logger.js'
 
 dotenv.config()
+
+export default driver
 
 export async function connectDb() {
     const driver = neo4j.driver(process.env.NEO_URI, neo4j.auth.basic(process.env.NEO_USER, process.env.NEO_PASS))
@@ -22,7 +24,6 @@ export async function connectDb() {
 
     } finally {
         await session.close()
-        module.exports = driver
     }
 
     // on application exit:
