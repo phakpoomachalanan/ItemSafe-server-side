@@ -5,6 +5,7 @@ import { createItem, deleteItem, getAllItem, getChildren, getItem, getParent, up
 const router = Router()
 
 router.post("/create", createItem)
+router.post("/upload", updateItem)
 
 router.put("/:itemId/update", updateItem)
 

@@ -31,6 +31,10 @@ export const createItem = async (req, res, next) => {
     }
 }
 
+export const uploadItem = async (req, res, next) => {
+    
+}
+
 export const updateItem = async (req, res, next) => {
 
 }
