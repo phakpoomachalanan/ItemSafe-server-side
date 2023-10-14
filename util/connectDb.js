@@ -1,26 +1,11 @@
-import neo4j from 'neo4j-driver'
-import dotenv from 'dotenv'
-import { logger } from './logger.js'
+import mongoose from "mongoose";
+import { logger } from "../util/logger.js"
 
-dotenv.config()
-export const driver = neo4j.driver(process.env.NEO_URI, neo4j.auth.basic(process.env.NEO_USER, process.env.NEO_PASS))
-
-export const connectDb = async () => {
-    const session = driver.session()
-    const personName = 'Popupie'
-
+export async function connectDb() {
     try {
-        const result = await session.run(
-            'CREATE (a:Person {name: $name}) RETURN a',
-            { name: personName }
-        )
-
-        const singleRecord = result.records[0]
-        const node = singleRecord.get(0)
-
-        logger.info(`connect database as ${node.properties.name}`)
-
-    } finally {
-        await session.close()
+        await mongoose.connect(process.env.MONGODB_URI)
+        logger.info("Database Connected Successfully")
+    } catch (e) {
+        logger.error("Can't Connect to Database")
     }
 }
