@@ -23,13 +23,21 @@ const itemSchema = new mongoose.Schema({
     cover: {
         type: String,
     },
+    parent: {
+        type: mongoose.Types.ObjectId,
+        ref: "Item",
+    },
+    children: {
+        type: mongoose.Types.ObjectId,
+        ref: "Item",
+    },
     warnings: [{
         type: mongoose.Types.ObjectId,
-        ref: "Warning"
+        ref: "Warning",
     }],
     tags: [{
         type: mongoose.Types.ObjectId,
-        ref: "Tag"
+        ref: "Tag",
     }]
 })
 
