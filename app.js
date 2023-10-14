@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser"
 import cors from 'cors'
 // Routes Import
 import authRoutes from './routes/auth.js'
-import nodeRoutes from './routes/node.js'
+import itemRoutes from './routes/item.js'
 import treeRoutes from './routes/tree.js'
 
 
@@ -48,7 +48,7 @@ function createApp() {
 
     // routes
     app.use("/auth", authRoutes)
-    app.use("/node", nodeRoutes)
+    app.use("/node", itemRoutes)
     app.use("/tree", treeRoutes)
 
     return app

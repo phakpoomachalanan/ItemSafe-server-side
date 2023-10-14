@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createNode, deleteNode, getAttribute, getChildren, updateNode } from "../controller/node.js"
+import { createNode, deleteNode, getAttribute, getChildren, updateNode } from "../controller/item.js"
 
 
 const router = Router()
