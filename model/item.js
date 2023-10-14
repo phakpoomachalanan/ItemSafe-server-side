@@ -26,6 +26,7 @@ const itemSchema = new mongoose.Schema({
     parent: {
         type: mongoose.Types.ObjectId,
         ref: "Item",
+        default: null
     },
     children: {
         type: mongoose.Types.ObjectId,
