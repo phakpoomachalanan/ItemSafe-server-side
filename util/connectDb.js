@@ -3,9 +3,10 @@ import { logger } from "../util/logger.js"
 
 export async function connectDb() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI)
-        logger.info("Database Connected Successfully")
-    } catch (e) {
+        const mongoUri  = process.env.MONGODB_URI
+        await mongoose.connect(mongoUri)
+        logger.info(`Database Connected at ${mongoUri}`)
+    } catch (error) {
         logger.error("Can't Connect to Database")
     }
 }
