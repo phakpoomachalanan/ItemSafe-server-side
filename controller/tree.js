@@ -1,4 +1,3 @@
-import { driver } from '../util/connectDb.js'
 
 
 export const initTree = async (req, res, next) => {
