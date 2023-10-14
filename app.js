@@ -1,5 +1,6 @@
 // Package Import
 import express from 'express'
+import morgan from 'morgan'
 import ExpressMongoSanitize from 'express-mongo-sanitize'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
@@ -9,9 +10,12 @@ import xXssProtection from 'x-xss-protection'
 import cookieParser from "cookie-parser"
 import cors from 'cors'
 // Routes Import
+import homePage from './routes/home.js'
 import authRoutes from './routes/auth.js'
 import itemRoutes from './routes/item.js'
 import treeRoutes from './routes/tree.js'
+import warningRoutes from './routes/warning.js'
+import tagRoutes from './routes/tag.js'
 
 
 function createApp() {
@@ -38,6 +42,7 @@ function createApp() {
 
     app.use(hppH)
     app.use("/api", limiter)
+    app.use(morgan("dev"));
     app.use(express.json({ limit: "10kb" }))
     app.use(helmet())
     app.use(cookieParser())
@@ -47,9 +52,12 @@ function createApp() {
     app.use(cors())
 
     // routes
+    app.use("/home", homePage)
     app.use("/auth", authRoutes)
-    app.use("/node", itemRoutes)
+    app.use("/item", itemRoutes)
     app.use("/tree", treeRoutes)
+    app.use("/warning", warningRoutes)
+    app.use("/tag", tagRoutes)
 
     return app
 }
