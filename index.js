@@ -14,17 +14,15 @@ function main() {
         connectDb()
     })
 
-    process.on('unhandledRejection', (err) => {
-        logger.error(err.name, err.message)
-        logger.error('Shutting down...')
+    process.on('unhandledRejection', (error) => {
+        logger.error(error.name, error.message)
         server.close(() => {
             process.exit(1)
         })
     })
 
-    process.on('uncaughtException', (err) => {
-        logger.error(err.name, err.message)
-        logger.error('Shutting down...')
+    process.on('uncaughtException', (error) => {
+        logger.error(error.name, error.message)
         server.close(() => {
             process.exit(1)
         })
