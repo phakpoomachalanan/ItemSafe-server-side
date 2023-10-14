@@ -39,6 +39,17 @@ export const deleteItem = async (req, res, next) => {
 
 }
 
+export const getItem = async (req, res, next) => {
+    try {        
+        const { itemId } = req.params
+        const item = await Item.findById({itemId}).populate('warnings').populate('tags')
+    
+        return res.json(item)
+    } catch(error) {
+        next(error)
+    }
+}
+
 export const getChildren = async (req, res, next) => {
     try {        
         const { itemId } = req.params
@@ -50,12 +61,12 @@ export const getChildren = async (req, res, next) => {
     }
 }
 
-export const getItem = async (req, res, next) => {
+export const getParent = async (req, res, next) => {
     try {        
         const { itemId } = req.params
-        const item = Item.findById({itemId}).populate('warnings').populate('tags')
+        const item = await Item.findById({itemId}).populate('parent')
     
-        return res.json(item)
+        return res.json(item.parent)
     } catch(error) {
         next(error)
     }
