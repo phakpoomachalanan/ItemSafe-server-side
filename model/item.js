@@ -20,6 +20,14 @@ const itemSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    warnings: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Warning",
+    }],
+    tags: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Tag",
+    }],
     cover: {
         type: String,
     },
@@ -28,18 +36,10 @@ const itemSchema = new mongoose.Schema({
         ref: "Item",
         default: null
     },
-    children: {
+    children: [{
         type: mongoose.Types.ObjectId,
         ref: "Item",
-    },
-    warnings: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Warning",
     }],
-    tags: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Tag",
-    }]
 })
 
 const Item = mongoose.models.item || mongoose.model("Item", itemSchema)
