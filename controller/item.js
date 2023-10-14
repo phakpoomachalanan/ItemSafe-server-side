@@ -36,7 +36,20 @@ export const updateItem = async (req, res, next) =>{
 
 
 export const deleteItem = async (req, res, next) => {
+    try {
+        const { itemId } = req.params
+        const item = await Item.findById(itemId)
 
+        if (!item) {
+            return next(createError(400, "Item was not found"));
+        }
+
+        await item.deleteOne()
+
+        return res.json({ message: `item: ${item.name} delete successfully` });
+    } catch (error) {
+        next(error)
+    }
 }
 
 export const getItem = async (req, res, next) => {
