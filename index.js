@@ -15,16 +15,16 @@ function main() {
     })
 
     process.on('unhandledRejection', (err) => {
-        console.error(err.name, err.message)
-        console.error('Shutting down...')
+        logger.error(err.name, err.message)
+        logger.error('Shutting down...')
         server.close(() => {
             process.exit(1)
         })
     })
 
     process.on('uncaughtException', (err) => {
-        console.error(err.name, err.message)
-        console.error('Shutting down...')
+        logger.error(err.name, err.message)
+        logger.error('Shutting down...')
         server.close(() => {
             process.exit(1)
         })
