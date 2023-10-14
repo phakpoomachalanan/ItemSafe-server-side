@@ -31,23 +31,16 @@ export const createItem = async (req, res, next) => {
     }
 }
 
-export const updateItem = async (req, res, next) =>{
+export const updateItem = async (req, res, next) => {
+
 }
 
-
-export const deleteItem = async (req, res, next) => {
+export const getAllItem = async (req, res, next) => {
     try {
-        const { itemId } = req.params
-        const item = await Item.findById(itemId)
+        const items = await Item.find({})
 
-        if (!item) {
-            return next(createError(400, "Item was not found"));
-        }
-
-        await item.deleteOne()
-
-        return res.json({ message: `item: ${item.name} delete successfully` });
-    } catch (error) {
+        return res.json(items)
+    } catch(error) {
         next(error)
     }
 }
@@ -55,7 +48,7 @@ export const deleteItem = async (req, res, next) => {
 export const getItem = async (req, res, next) => {
     try {        
         const { itemId } = req.params
-        const item = await Item.findById({itemId}).populate('warnings').populate('tags')
+        const item = await Item.findById(itemId).populate('warnings').populate('tags')
     
         return res.json(item)
     } catch(error) {
@@ -81,6 +74,23 @@ export const getParent = async (req, res, next) => {
     
         return res.json(item.parent)
     } catch(error) {
+        next(error)
+    }
+}
+
+export const deleteItem = async (req, res, next) => {
+    try {
+        const { itemId } = req.params
+        const item = await Item.findById(itemId)
+
+        if (!item) {
+            return next(createError(400, "Item was not found"));
+        }
+
+        await item.deleteOne()
+
+        return res.json({ message: `item: ${item.name} delete successfully` });
+    } catch (error) {
         next(error)
     }
 }
