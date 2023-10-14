@@ -6,11 +6,11 @@ const router = Router()
 
 router.post("/create", createItem)
 
-router.put("/{nodeId}/update", updateItem)
+router.put("/{itemId}/update", updateItem)
 
-router.get("/{nodeId}/attr", getItem)
-router.get("/{nodeId}/children", getChildren)
+router.get("/{itemId}/attr", getItem)
+router.get("/{itemId}/children", getChildren)
 
-router.delete("/{nodeId}/delete", deleteItem)
+router.delete("/{itemId}/delete", deleteItem)
 
 export default router
