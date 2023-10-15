@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import Item from '../model/item.js'
-
+import path, { extname } from 'path'
+import { createError } from '../util/createError.js'
 
 export const createItem = async (req, res, next) => {
     try {
@@ -45,7 +46,14 @@ export const createItem = async (req, res, next) => {
 
 export const uploadItem = async (req, res, next) => {
     try {
-        return res.json({message: "done"})
+        const item  = req.file
+        if (!item) {
+            next(createError(400, 'No file uploaded.'))
+        }
+
+        const fileType = extname(item.originalname)
+
+        return res.json({message: fileType})
     } catch(error) {
         next(error)
     }
