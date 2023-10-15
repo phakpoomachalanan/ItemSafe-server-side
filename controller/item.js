@@ -44,7 +44,11 @@ export const createItem = async (req, res, next) => {
 }
 
 export const uploadItem = async (req, res, next) => {
-
+    try {
+        return res.json({message: "done"})
+    } catch(error) {
+        next(error)
+    }
 }
 
 export const updateItem = async (req, res, next) => {

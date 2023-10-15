@@ -1,11 +1,12 @@
 import { Router } from "express"
 import { createItem, deleteItem, getAllItem, getChildren, getItem, getParent, updateItem, uploadItem } from "../controller/item.js"
+import { upload } from "../middleware/upload.js"
 
 
 const router = Router()
 
 router.post("/create", createItem)
-router.post("/upload", uploadItem)
+router.post("/upload", upload.single('file'), uploadItem)
 
 router.put("/:itemId/update", updateItem)
 
