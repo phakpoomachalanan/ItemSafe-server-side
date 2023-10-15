@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        require: true,
+    filename: {
+        name: {
+            type: String,
+            require: true,
+        },
+        ext: {
+            type: String,
+            require: true,
+        }
     },
     description: {
         type: String,
@@ -35,6 +41,10 @@ const itemSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "Item",
         default: null
+    },
+    parentPath: {
+        type: String,
+        default: ""
     },
     children: [{
         type: mongoose.Types.ObjectId,
