@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Item from '../model/item.js'
 
 
@@ -20,10 +21,21 @@ export const createItem = async (req, res, next) => {
         }
         
         if (parent !== "") {
-            itemDetail.parent = parent
+            itemDetail.parent = new mongoose.Types.ObjectId(parent)
         }
 
         const item = await Item.create(itemDetail)
+
+        if (parent !== "") {
+            await Item.findByIdAndUpdate(
+                item.parent,
+                {
+                    $push: {
+                        children: item._id 
+                    }
+                }
+            )
+        }
     
         return res.json(item)
     } catch(error) {
@@ -32,7 +44,7 @@ export const createItem = async (req, res, next) => {
 }
 
 export const uploadItem = async (req, res, next) => {
-    
+
 }
 
 export const updateItem = async (req, res, next) => {
@@ -63,7 +75,7 @@ export const getItem = async (req, res, next) => {
 export const getChildren = async (req, res, next) => {
     try {        
         const { itemId } = req.params
-        const item = Item.findById({itemId}).populate('children')
+        const item = Item.findById(itemId).populate('children')
     
         return res.json(item.children)
     } catch(error) {
@@ -74,7 +86,7 @@ export const getChildren = async (req, res, next) => {
 export const getParent = async (req, res, next) => {
     try {        
         const { itemId } = req.params
-        const item = await Item.findById({itemId}).populate('parent')
+        const item = await Item.findById(itemId).populate('parent')
     
         return res.json(item.parent)
     } catch(error) {
