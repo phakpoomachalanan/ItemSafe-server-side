@@ -1,43 +1,13 @@
-import mongoose from 'mongoose'
 import Item from '../model/item.js'
 import path, { extname } from 'path'
 import { createError } from '../util/createError.js'
+import { createItemFunc, moveItem } from '../util/item.js'
 
 export const createItem = async (req, res, next) => {
     try {
-        const { name, description, type, size, path, warnings, tags, cover, parent } = req.body
+        const { name, description, type, size, path, warnings, tags, cover, parent, parentPath } = req.body
+        const item = await createItemFunc(name, description, type, size, path, warnings, tags, cover, parent, parentPath)
 
-        let itemDetail = {
-            name: name,
-            description: description,
-            type: type,
-            size: size,
-            path: path,
-            warnings: warnings,
-            tags: tags,
-        }
-    
-        if (cover !== "") {
-            itemDetail.cover = cover
-        }
-        
-        if (parent !== "") {
-            itemDetail.parent = new mongoose.Types.ObjectId(parent)
-        }
-
-        const item = await Item.create(itemDetail)
-
-        if (parent !== "") {
-            await Item.findByIdAndUpdate(
-                item.parent,
-                {
-                    $push: {
-                        children: item._id 
-                    }
-                }
-            )
-        }
-    
         return res.json(item)
     } catch(error) {
         next(error)
@@ -47,13 +17,26 @@ export const createItem = async (req, res, next) => {
 export const uploadItem = async (req, res, next) => {
     try {
         const item  = req.file
+        const jsonBody = JSON.parse(JSON.parse(JSON.stringify(req.body)).jsonBody)
+
+        const { name, description, type, size, path, warnings, tags, cover, parent, parentPath } = jsonBody
+        let itemRecord
+
         if (!item) {
             next(createError(400, 'No file uploaded.'))
         }
 
-        const fileType = extname(item.originalname)
+        if (type === "zip") {
 
-        return res.json({message: fileType})
+        } else {
+            itemRecord = await createItemFunc(name, description, type, size, path, warnings, tags, cover, parent, parentPath)
+            
+            if (!moveItem(name, path)) {
+                return next(createError(500, "Cannot move item"))
+            }
+        }
+        
+        return res.json(itemRecord)
     } catch(error) {
         next(error)
     }
