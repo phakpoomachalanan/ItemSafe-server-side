@@ -6,7 +6,7 @@ import { upload } from "../middleware/upload.js"
 const router = Router()
 
 router.post("/create", createItem)
-router.post("/upload", upload.single('file'), uploadItem)
+router.post("/upload", upload.single('item'), uploadItem)
 
 router.put("/:itemId/update", updateItem)
 
