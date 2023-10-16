@@ -4,6 +4,7 @@ import { createError } from '../util/createError.js'
 import { craeteItemFromDirFunc, createItemFunc, moveItem } from '../util/item.js'
 import AdmZip from 'adm-zip'
 import { bytesToSize } from '../util/size.js'
+import fs from 'fs'
 
 export const createItem = async (req, res, next) => {
     try {
@@ -34,9 +35,15 @@ export const uploadItem = async (req, res, next) => {
         if (type === "zip") {
             const noExt = temp[0]
             const pathNoExt = path.join(parentPath, noExt)
+            const file = path.join(process.cwd(), '/dump', name)
 
-            var file = new AdmZip(path.join(process.cwd(), '/dump', name))
-            file.extractAllTo(pathNoExt)
+            var zipFile = new AdmZip(file)
+            zipFile.extractAllTo(pathNoExt)
+            fs.unlink(file, (error) => {
+                if (error) {
+                    console.error(`Error deleting the file: ${err}`);
+                }
+            })
 
             itemRecord = await createItemFunc(noExt, description, "", bytesToSize(item.size), pathNoExt, warnings, tags, cover, parent, parentPath,true)
             await craeteItemFromDirFunc(pathNoExt, itemRecord._id)

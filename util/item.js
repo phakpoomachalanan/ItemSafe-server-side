@@ -6,7 +6,7 @@ import { bytesToSize } from "./size.js"
 
 
 export const createItemFunc = async (name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, updateChildren ) => {
-    if ((await Item.find({filePath: filePath})).length !== 1) {
+    if ((await Item.find({filePath: filePath})).length >= 1) {
         return {message: "Already created"}
     }
 
