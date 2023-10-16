@@ -85,7 +85,6 @@ export const craeteItemFromDirFunc = async (dir, parent) => {
         const newRecord = (await createItemFunc(file, "", type, size, filePath, [], [], "", parent, dir, false))
 
         children.push(newRecord._id)
-        console.log(children)
         
         if (fs.statSync(filePath).isDirectory()) {
             craeteItemFromDirFunc(filePath, newRecord._id)
