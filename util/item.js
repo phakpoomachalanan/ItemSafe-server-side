@@ -2,15 +2,16 @@ import Item from "../model/item.js"
 import mongoose from 'mongoose'
 import path, { extname } from 'path'
 import fs from 'fs'
+import { bytesToSize } from "./size.js"
 
 
-export const createItemFunc = async (name, description, type, size, path, warnings, tags, cover, parent, parentPath ) => {
+export const createItemFunc = async (name, description, type, size, filePath, warnings, tags, cover, parent, parentPath ) => {
     let itemDetail = {
         name: name,
         description: description,
         type: type,
         size: size,
-        path: path,
+        filePath: filePath,
         warnings: warnings,
         tags: tags,
         parentPath: parentPath
@@ -58,3 +59,18 @@ export const moveItem = (name, destination) => {
     }
 }
 
+export const craeteItemFromDirFunc = async (dir, parent) => {
+    const fileList = fs.readdirSync(dir);
+
+    for (const file of fileList) {
+        const type = file.split('.')[1];
+        const size = bytesToSize(fs.statSync(filePath).size);
+        const filePath = `${dir}/${file}`
+
+        const parentId = (await createItemFunc(file, "", type, size, filePath, [], [], "", parent, dir))._id
+
+        if (fs.statSync(filePath).isDirectory()) {
+            getFiles(filePath, parentId)
+        }
+    }
+}
