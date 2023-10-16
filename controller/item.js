@@ -2,11 +2,12 @@ import Item from '../model/item.js'
 import path, { extname } from 'path'
 import { createError } from '../util/createError.js'
 import { createItemFunc, moveItem } from '../util/item.js'
+import AdmZip from 'adm-zip'
 
 export const createItem = async (req, res, next) => {
     try {
-        const { name, description, type, size, path, warnings, tags, cover, parent, parentPath } = req.body
-        const item = await createItemFunc(name, description, type, size, path, warnings, tags, cover, parent, parentPath)
+        const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
+        const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath)
 
         return res.json(item)
     } catch(error) {
@@ -19,7 +20,7 @@ export const uploadItem = async (req, res, next) => {
         const item  = req.file
         const jsonBody = JSON.parse(JSON.parse(JSON.stringify(req.body)).jsonBody)
 
-        const { name, description, type, size, path, warnings, tags, cover, parent, parentPath } = jsonBody
+        const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = jsonBody
         let itemRecord
 
         if (!item) {
@@ -27,11 +28,18 @@ export const uploadItem = async (req, res, next) => {
         }
 
         if (type === "zip") {
+            const noExt = name.split('.')[0]
+            const pathNoExt = path.join(filePath, noExt)
+            var file = new AdmZip(path.join(process.cwd(), '/dump', name))
+            file.extractAllTo(pathNoExt)
+
+            itemRecord = await createItemFunc(noExt, description, type, size, pathNoExt, warnings, tags, cover, parent, parentPath)
+
 
         } else {
-            itemRecord = await createItemFunc(name, description, type, size, path, warnings, tags, cover, parent, parentPath)
+            itemRecord = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath)
             
-            if (!moveItem(name, path)) {
+            if (!moveItem(name, filePath)) {
                 return next(createError(500, "Cannot move item"))
             }
         }
