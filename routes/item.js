@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createItem, deleteItem, getAllItem, getChildren, getItem, getParent, updateItem, uploadItem } from "../controller/item.js"
+import { createItem, deleteItem, getAllItem, getChildren, getItem, getParent, moveItem, updateItem, uploadItem } from "../controller/item.js"
 import { upload } from "../middleware/upload.js"
 
 
@@ -8,6 +8,7 @@ const router = Router()
 router.post("/create", createItem)
 router.post("/upload", upload.single('item'), uploadItem)
 
+router.put("/:itemId/move", moveItem)
 router.put("/:itemId/update", updateItem)
 
 router.get("/", getAllItem)
