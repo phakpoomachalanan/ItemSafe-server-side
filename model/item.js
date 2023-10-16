@@ -1,15 +1,9 @@
 import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema({
-    filename: {
-        name: {
-            type: String,
-            require: true,
-        },
-        ext: {
-            type: String,
-            require: true,
-        }
+    name: {
+        type: String,
+        require: true,
     },
     description: {
         type: String,
@@ -22,7 +16,7 @@ const itemSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    path: {
+    filePath: {
         type: String,
         require: true,
     },
