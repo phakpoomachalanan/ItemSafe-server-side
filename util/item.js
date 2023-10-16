@@ -63,7 +63,12 @@ export const craeteItemFromDirFunc = async (dir, parent) => {
     const fileList = fs.readdirSync(dir);
 
     for (const file of fileList) {
-        const type = file.split('.')[1];
+        let type
+        if (file.startsWith('.')) {
+            type = ''    
+        } else {
+            type = file.split('.')[1];
+        }
         const size = bytesToSize(fs.statSync(filePath).size);
         const filePath = `${dir}/${file}`
 
