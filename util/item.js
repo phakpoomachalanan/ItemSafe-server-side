@@ -5,7 +5,11 @@ import fs from 'fs'
 import { bytesToSize } from "./size.js"
 
 
-export const createItemFunc = async (name, description, type, size, filePath, warnings, tags, cover, parent, parentPath ) => {
+export const createItemFunc = async (name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, updateChildren ) => {
+    if (!(await Item.find({filePath: filePath}))) {
+        return {message: "Already created"}
+    }
+
     let itemDetail = {
         name: name,
         description: description,
@@ -14,7 +18,7 @@ export const createItemFunc = async (name, description, type, size, filePath, wa
         filePath: filePath,
         warnings: warnings,
         tags: tags,
-        parentPath: parentPath
+        parentPath: parentPath,
     }
 
     if (cover !== "") {
@@ -27,9 +31,13 @@ export const createItemFunc = async (name, description, type, size, filePath, wa
         itemDetail.parent = new mongoose.Types.ObjectId(parent)
     }
 
+    if (type === "") {
+        itemDetail.children = []        
+    }
+
     const item = await Item.create(itemDetail)
 
-    if (parent !== "") {
+    if (parent !== "" && updateChildren) {
         await Item.findByIdAndUpdate(
             item.parent,
             {
@@ -64,18 +72,28 @@ export const craeteItemFromDirFunc = async (dir, parent) => {
 
     for (const file of fileList) {
         let type
+        let children = []
         if (file.startsWith('.')) {
             type = ''    
         } else {
-            type = file.split('.')[1];
+            const temp =  file.split('.')
+            type = temp[temp.length-1]
         }
-        const size = bytesToSize(fs.statSync(filePath).size);
         const filePath = `${dir}/${file}`
+        const size = bytesToSize(fs.statSync(filePath).size)
 
-        const parentId = (await createItemFunc(file, "", type, size, filePath, [], [], "", parent, dir))._id
+        const newRecord = (await createItemFunc(file, "", type, size, filePath, [], [], "", parent, dir, false))
 
+        children.push(newRecord._id)
+        console.log(children)
+        
         if (fs.statSync(filePath).isDirectory()) {
-            getFiles(filePath, parentId)
+            craeteItemFromDirFunc(filePath, newRecord._id)
         }
+
+        const item = await Item.findById(parent)
+        item.children.push(children)
+        await item.save()
+        
     }
 }
