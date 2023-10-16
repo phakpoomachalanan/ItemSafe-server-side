@@ -1,13 +1,14 @@
 import Item from '../model/item.js'
 import path, { extname } from 'path'
 import { createError } from '../util/createError.js'
-import { createItemFunc, moveItem } from '../util/item.js'
+import { craeteItemFromDirFunc, createItemFunc, moveItem } from '../util/item.js'
 import AdmZip from 'adm-zip'
+import { bytesToSize } from '../util/size.js'
 
 export const createItem = async (req, res, next) => {
     try {
         const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
-        const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath)
+        const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, true)
 
         return res.json(item)
     } catch(error) {
@@ -20,30 +21,33 @@ export const uploadItem = async (req, res, next) => {
         const item  = req.file
         const jsonBody = JSON.parse(JSON.parse(JSON.stringify(req.body)).jsonBody)
 
-        const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = jsonBody
+        const { name, description, filePath, warnings, tags, cover, parent, parentPath } = jsonBody
         let itemRecord
 
         if (!item) {
             next(createError(400, 'No file uploaded.'))
         }
 
+        const temp = item.originalname.split('.')
+        const type = temp[temp.length-1]
+
         if (type === "zip") {
-            const noExt = name.split('.')[0]
-            const pathNoExt = path.join(filePath, noExt)
+            const noExt = temp[0]
+            const pathNoExt = path.join(parentPath, noExt)
+
             var file = new AdmZip(path.join(process.cwd(), '/dump', name))
             file.extractAllTo(pathNoExt)
 
-            itemRecord = await createItemFunc(noExt, description, type, size, pathNoExt, warnings, tags, cover, parent, parentPath)
-
-
+            itemRecord = await createItemFunc(noExt, description, "", bytesToSize(item.size), pathNoExt, warnings, tags, cover, parent, parentPath,true)
+            await craeteItemFromDirFunc(pathNoExt, itemRecord._id)
         } else {
-            itemRecord = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath)
+            itemRecord = await createItemFunc(name, description, type, bytesToSize(item.size), filePath, warnings, tags, cover, parent, parentPath, true)
             
             if (!moveItem(name, filePath)) {
                 return next(createError(500, "Cannot move item"))
             }
         }
-        
+
         return res.json(itemRecord)
     } catch(error) {
         next(error)
