@@ -51,11 +51,9 @@ export const createItemFunc = async (name, description, type, size, filePath, wa
     return item
 }
 
-export const moveItem = (name, destination) => {
+export const moveItemFunc = (source, destination) => {
     try {
-        const __dirname = process.cwd()
-        
-        fs.rename(path.join(__dirname, '/dump', name), destination, (error) => {
+        fs.rename(source, destination, (error) => {
             if (error) {
                 console.log(error)
             }
@@ -63,6 +61,33 @@ export const moveItem = (name, destination) => {
         return true
     } catch(error) {
         console.log(error)
+        return false
+    }
+}
+
+export const moveMultipleItemFunc = async (destination, itemId) => {
+    try {
+        const item = await Item.findById(itemId).populate('children')
+        if (!item) {
+            return next(createError(400, "Item not found"))
+        }
+
+        if (item.type !== "") {
+            return
+        }
+        
+        for (const child in item.children) {
+            child.filePath = destination+child.name
+            child.parentPath = destination
+
+            await child.save()
+
+            if (child.type === "") {
+                await moveMultipleItemFunc(child.filePath, child._id)
+            }
+        }
+        return true
+    } catch(error) {
         return false
     }
 }
