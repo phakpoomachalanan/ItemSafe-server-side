@@ -1,7 +1,7 @@
 import Item from '../model/item.js'
 import path, { extname } from 'path'
 import { createError } from '../util/createError.js'
-import { craeteItemFromDirFunc, createItemFunc, moveItem } from '../util/item.js'
+import { craeteItemFromDirFunc, createItemFunc, moveItemFunc, moveMultipleItemFunc } from '../util/item.js'
 import AdmZip from 'adm-zip'
 import { bytesToSize } from '../util/size.js'
 import fs from 'fs'
@@ -26,7 +26,7 @@ export const uploadItem = async (req, res, next) => {
         let itemRecord
 
         if (!item) {
-            next(createError(400, 'No file uploaded.'))
+            next(createError(400, 'No file uploaded'))
         }
 
         const temp = item.originalname.split('.')
@@ -50,12 +50,59 @@ export const uploadItem = async (req, res, next) => {
         } else {
             itemRecord = await createItemFunc(name, description, type, bytesToSize(item.size), filePath, warnings, tags, cover, parent, parentPath, true)
             
-            if (!moveItem(name, filePath)) {
+            if (!moveItemFunc(path.join(process.cwd(), '/dump', name), filePath)) {
                 return next(createError(500, "Cannot move item"))
             }
         }
 
         return res.json(itemRecord)
+    } catch(error) {
+        next(error)
+    }
+}
+
+export const moveItem = async (req, res, next) => {
+    try {
+        const { itemId } = req.params
+        const { destination } = req.body
+    
+        const item = await Item.findById(itemId)
+        if (!item) {
+            return next(createError(400, "Item not found"))
+        }
+
+        if (!moveItemFunc(item.filePath, destination)) {
+            return next(createError(500, "Cannot move item"))
+        }
+
+        await Item.findByIdAndUpdate(
+            itemId.parent, {
+                $pull: {
+                    children: itemId
+                }
+            }
+        )
+
+        item.filePath = path.join(destination, item.name) 
+            
+        const newParent = await Item.findOneAndUpdate(
+            {
+                filePath: destination
+            },
+            {
+                $push: {
+                    children: itemId
+                }
+            }
+        )
+        
+        item.parent = newParent._id
+        await item.save()
+        
+        await moveMultipleItemFunc(item.filePath, itemId)
+
+        return res.json(item)
+
     } catch(error) {
         next(error)
     }
