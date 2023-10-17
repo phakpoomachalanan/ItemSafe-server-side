@@ -16,6 +16,7 @@ import itemRoutes from './routes/item.js'
 import treeRoutes from './routes/tree.js'
 import warningRoutes from './routes/warning.js'
 import tagRoutes from './routes/tag.js'
+import searchRoutes from './routes/search.js'
 
 
 function createApp() {
@@ -55,6 +56,7 @@ function createApp() {
     app.use("/home", homePage)
     app.use("/auth", authRoutes)
     app.use("/item", itemRoutes)
+    app.use("/search", searchRoutes)
     app.use("/tree", treeRoutes)
     app.use("/warning", warningRoutes)
     app.use("/tag", tagRoutes)
