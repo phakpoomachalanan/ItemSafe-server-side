@@ -55,11 +55,11 @@ function createApp() {
     // routes
     app.use("/home", homePage)
     app.use("/auth", authRoutes)
-    app.use("/item", itemRoutes)
+    app.use("/items", itemRoutes)
     app.use("/search", searchRoutes)
-    app.use("/tree", treeRoutes)
-    app.use("/warning", warningRoutes)
-    app.use("/tag", tagRoutes)
+    app.use("/trees", treeRoutes)
+    app.use("/warnings", warningRoutes)
+    app.use("/tags", tagRoutes)
 
     return app
 }
