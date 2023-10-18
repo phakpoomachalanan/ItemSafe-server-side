@@ -10,7 +10,7 @@ export const createItemFunc = async (name, description, type, size, filePath, wa
         return {message: "Already created"}
     }
 
-    let itemDetail = {
+    const itemDetail = {
         name: name,
         description: description,
         type: type,
@@ -73,19 +73,21 @@ export const moveMultipleItemFunc = async (destination, itemId) => {
         }
 
         if (item.type !== "") {
-            return
+            return true
         }
-        
-        for (const child in item.children) {
-            child.filePath = destination+child.name
-            child.parentPath = destination
 
+        const newPath = path.join(destination, item.name)
+
+        for (const child of item.children) {
+            child.filePath = newPath
+            child.parentPath = destination
             await child.save()
 
             if (child.type === "") {
-                await moveMultipleItemFunc(child.filePath, child._id)
+                await moveMultipleItemFunc(newPath, child._id)
             }
         }
+
         return true
     } catch(error) {
         return false
@@ -96,15 +98,10 @@ export const craeteItemFromDirFunc = async (dir, parent) => {
     const fileList = fs.readdirSync(dir);
 
     for (const file of fileList) {
-        let type
-        let children = []
-        if (file.startsWith('.')) {
-            type = ''    
-        } else {
-            const temp =  file.split('.')
-            type = temp[temp.length-1]
-        }
-        const filePath = `${dir}/${file}`
+        const type = extname(file).slice(1)
+        const children = []
+
+        const filePath = path.join(dir, file)
         const size = bytesToSize(fs.statSync(filePath).size)
 
         const newRecord = (await createItemFunc(file, "", type, size, filePath, [], [], "", parent, dir, false))

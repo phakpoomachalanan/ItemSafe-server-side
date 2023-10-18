@@ -1,5 +1,5 @@
 import Item from '../model/item.js'
-import path, { extname } from 'path'
+import path from 'path'
 import { createError } from '../util/createError.js'
 import { craeteItemFromDirFunc, createItemFunc, moveItemFunc, moveMultipleItemFunc } from '../util/item.js'
 import AdmZip from 'adm-zip'
@@ -65,13 +65,16 @@ export const moveItem = async (req, res, next) => {
     try {
         const { itemId } = req.params
         const { destination } = req.body
-    
+
+        
         const item = await Item.findById(itemId)
         if (!item) {
             return next(createError(400, "Item not found"))
         }
+        
+        const newPath = path.join(destination, item.name) 
 
-        if (!moveItemFunc(item.filePath, destination)) {
+        if (!moveItemFunc(item.filePath, newPath)) {
             return next(createError(500, "Cannot move item"))
         }
 
@@ -83,8 +86,7 @@ export const moveItem = async (req, res, next) => {
             }
         )
 
-        item.filePath = path.join(destination, item.name) 
-            
+        
         const newParent = await Item.findOneAndUpdate(
             {
                 filePath: destination
@@ -95,11 +97,13 @@ export const moveItem = async (req, res, next) => {
                 }
             }
         )
-        
+            
+        item.filePath = newPath
         item.parent = newParent._id
+        item.parentPath = destination
         await item.save()
         
-        await moveMultipleItemFunc(item.filePath, itemId)
+        await moveMultipleItemFunc(newPath, itemId)
 
         return res.json(item)
 
