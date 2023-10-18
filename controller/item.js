@@ -169,7 +169,8 @@ export const getAllItemName = async (req, res, next) => {
             }, {
                 '$project': {
                     '_id': 1, 
-                    'name': 1
+                    'name': 1,
+                    'filePath': 1
                 }
             }
         ]
