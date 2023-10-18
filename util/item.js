@@ -51,20 +51,6 @@ export const createItemFunc = async (name, description, type, size, filePath, wa
     return item
 }
 
-export const moveItemFunc = (source, destination) => {
-    try {
-        fs.rename(source, destination, (error) => {
-            if (error) {
-                console.log(error)
-            }
-        })
-        return true
-    } catch(error) {
-        console.log(error)
-        return false
-    }
-}
-
 export const moveMultipleItemFunc = async (destination, itemId) => {
     try {
         const item = await Item.findById(itemId).populate('children')
