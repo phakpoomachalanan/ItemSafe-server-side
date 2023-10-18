@@ -1,10 +1,12 @@
 import Item from '../model/item.js'
-import path from 'path'
+import path, { basename } from 'path'
 import { createError } from '../util/createError.js'
-import { craeteItemFromDirFunc, createItemFunc, moveItemFunc, moveMultipleItemFunc } from '../util/item.js'
+import { craeteItemFromDirFunc, createItemFunc, moveMultipleItemFunc } from '../util/item.js'
 import AdmZip from 'adm-zip'
 import { bytesToSize } from '../util/size.js'
 import fs, { promises as fsPromises } from 'fs'
+import { moveItemFunc } from '../util/file.js'
+
 
 export const createFolder = async (req, res, next) => {
     try {
@@ -178,6 +180,57 @@ export const getAllItemName = async (req, res, next) => {
         const items = await Item.aggregate(pipeline)
 
         return res.json(items)
+    } catch(error) {
+        next(error)
+    }
+}
+
+export const downloadItem = async (req, res, next) => {
+    try {
+        // const { itemsId } = req.body
+        const zip = AdmZip()
+        const files = []
+
+        const itemsId = ["652f795f515e273f96ff962d"]
+
+        const items = await Item.find(
+            {
+                _id: {
+                    "$in": itemsId
+                }
+            },
+            "filePath"
+        )
+
+        if (items.length <= 0) {
+            next(createError(404, "File not found"))
+        }
+
+        for (const item of items) {
+            if (fs.existsSync(item.filePath)) {
+                if (fs.lstatSync(item.filePath).isDirectory()) {
+                    zip.addLocalFolder(item.filePath, "")
+                } else {
+                    zip.addLocalFile(item.filePath, "")
+                }
+            }
+        }
+
+        const archivedFile = path.join('./dump', Date.now().toString()+".zip")
+        zip.writeZip(archivedFile)
+        files.push(archivedFile)
+
+        res.download(archivedFile)
+
+        // files.forEach((file) => {
+        //     fs.unlink(file, (error) => {
+        //         if (error) {
+        //             console.error(`Error deleting the file: ${err}`);
+        //         }
+        //     })
+        // })
+
+        return 
     } catch(error) {
         next(error)
     }
