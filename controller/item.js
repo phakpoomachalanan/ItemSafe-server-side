@@ -4,11 +4,13 @@ import { createError } from '../util/createError.js'
 import { craeteItemFromDirFunc, createItemFunc, moveItemFunc, moveMultipleItemFunc } from '../util/item.js'
 import AdmZip from 'adm-zip'
 import { bytesToSize } from '../util/size.js'
-import fs from 'fs'
+import fs, { promises as fsPromises } from 'fs'
 
-export const createItem = async (req, res, next) => {
+export const createFolder = async (req, res, next) => {
     try {
         const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
+        await fsPromises.mkdir(filePath)
+
         const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, true)
 
         return res.json(item)
