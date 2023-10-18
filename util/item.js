@@ -76,9 +76,9 @@ export const moveMultipleItemFunc = async (destination, itemId) => {
             return true
         }
 
-        const newPath = path.join(destination, item.name)
-
+        
         for (const child of item.children) {
+            const newPath = path.join(destination, child.name)
             child.filePath = newPath
             child.parentPath = destination
             await child.save()
