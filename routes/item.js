@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createFolder, deleteItem, getAllItem, getAllItemName, getChildren, getItem, getParent, moveItem, updateItem, uploadItem } from "../controller/item.js"
+import { createFolder, deleteItem, downloadItem, getAllItem, getAllItemName, getChildren, getItem, getParent, moveItem, updateItem, uploadItem } from "../controller/item.js"
 import { upload } from "../middleware/upload.js"
 
 
@@ -13,6 +13,7 @@ router.put("/:itemId/update", updateItem)
 
 router.get("/", getAllItem)
 router.get("/name", getAllItemName)
+router.get("/download", downloadItem)
 router.get("/:itemId", getItem)
 router.get("/:itemId/children", getChildren)
 router.get("/:itemId/parent", getParent)
