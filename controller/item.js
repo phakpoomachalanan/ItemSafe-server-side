@@ -161,6 +161,27 @@ export const getParent = async (req, res, next) => {
     }
 }
 
+export const getAllItemName = async (req, res, next) => {
+    try {
+        const pipeline = [
+            {
+                '$match': {}
+            }, {
+                '$project': {
+                    '_id': 1, 
+                    'name': 1
+                }
+            }
+        ]
+
+        const items = await Item.aggregate(pipeline)
+
+        return res.json(items)
+    } catch(error) {
+        next(error)
+    }
+}
+
 export const deleteItem = async (req, res, next) => {
     try {
         const { itemId } = req.params
