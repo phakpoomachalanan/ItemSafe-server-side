@@ -187,11 +187,9 @@ export const getAllItemName = async (req, res, next) => {
 
 export const downloadItem = async (req, res, next) => {
     try {
-        // const { itemsId } = req.body
+        const { itemsId } = req.body
         const zip = AdmZip()
         const files = []
-
-        const itemsId = ["652f795f515e273f96ff962d"]
 
         const items = await Item.find(
             {
