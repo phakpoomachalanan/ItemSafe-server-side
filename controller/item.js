@@ -218,8 +218,6 @@ export const downloadItem = async (req, res, next) => {
         zip.writeZip(archivedFile)
         files.push(archivedFile)
 
-        res.download(archivedFile)
-
         // files.forEach((file) => {
         //     fs.unlink(file, (error) => {
         //         if (error) {
@@ -228,7 +226,7 @@ export const downloadItem = async (req, res, next) => {
         //     })
         // })
 
-        return 
+        return res.download(archivedFile)
     } catch(error) {
         next(error)
     }
