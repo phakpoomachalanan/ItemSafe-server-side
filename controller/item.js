@@ -24,9 +24,7 @@ export const createFolder = async (req, res, next) => {
 export const uploadItem = async (req, res, next) => {
     try {
         const item  = req.file
-        const jsonBody = JSON.parse(JSON.parse(JSON.stringify(req.body)).jsonBody)
-
-        const { name, description, filePath, warnings, tags, cover, parent, parentPath } = jsonBody
+        const { name, description, filePath, warnings, cover, parent, parentPath, tags } = req.body
         let itemRecord
 
         if (!item) {
