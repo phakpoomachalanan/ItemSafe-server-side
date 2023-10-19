@@ -187,7 +187,8 @@ export const getAllItemName = async (req, res, next) => {
 
 export const downloadItem = async (req, res, next) => {
     try {
-        const { itemsId } = req.body
+        const itemsId = req.body?.itemsId ? req.body.itemsId : await Item.find({parent: null})
+
         const zip = AdmZip()
         const files = []
 
@@ -221,7 +222,7 @@ export const downloadItem = async (req, res, next) => {
         // files.forEach((file) => {
         //     fs.unlink(file, (error) => {
         //         if (error) {
-        //             console.error(`Error deleting the file: ${err}`);
+        //             console.error(`Error deleting the file: ${err}`)
         //         }
         //     })
         // })
