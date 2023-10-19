@@ -17,6 +17,7 @@ import treeRoutes from './routes/tree.js'
 import warningRoutes from './routes/warning.js'
 import tagRoutes from './routes/tag.js'
 import searchRoutes from './routes/search.js'
+import { intervalTriggerDump } from './util/triggerDump.js'
 
 
 function createApp() {
@@ -60,6 +61,8 @@ function createApp() {
     app.use("/trees", treeRoutes)
     app.use("/warnings", warningRoutes)
     app.use("/tags", tagRoutes)
+
+    intervalTriggerDump()
 
     return app
 }
