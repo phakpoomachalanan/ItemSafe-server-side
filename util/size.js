@@ -1,4 +1,4 @@
-const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
 
 export const bytesToSize = (bytes)  => {
     if (bytes === 0) return '0 Byte'

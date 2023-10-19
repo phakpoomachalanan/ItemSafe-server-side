@@ -43,7 +43,7 @@ export const uploadItem = async (req, res, next) => {
             zipFile.extractAllTo(pathNoExt)
             fs.unlink(file, (error) => {
                 if (error) {
-                    console.error(`Error deleting the file: ${err}`);
+                    console.error(`Error deleting the file: ${err}`)
                 }
             })
 
@@ -237,12 +237,12 @@ export const deleteItem = async (req, res, next) => {
         const item = await Item.findById(itemId)
 
         if (!item) {
-            return next(createError(400, "Item was not found"));
+            return next(createError(400, "Item was not found"))
         }
 
         await item.deleteOne()
 
-        return res.json({ message: `item: ${item.name} delete successfully` });
+        return res.json({ message: `item: ${item.name} delete successfully` })
     } catch (error) {
         next(error)
     }

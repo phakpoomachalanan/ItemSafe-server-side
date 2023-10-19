@@ -43,7 +43,7 @@ function createApp() {
 
     app.use(hppH)
     app.use("/api", limiter)
-    app.use(morgan("dev"));
+    app.use(morgan("dev"))
     app.use(express.json({ limit: "10kb" }))
     app.use(helmet())
     app.use(cookieParser())

@@ -81,7 +81,7 @@ export const moveMultipleItemFunc = async (destination, itemId) => {
 }
 
 export const craeteItemFromDirFunc = async (dir, parent) => {
-    const fileList = fs.readdirSync(dir);
+    const fileList = fs.readdirSync(dir)
 
     for (const file of fileList) {
         const type = extname(file).slice(1)

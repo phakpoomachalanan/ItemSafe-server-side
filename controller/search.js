@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import Item from "../model/item.js";
+import mongoose from "mongoose"
+import Item from "../model/item.js"
 
 
 export const searchItem = async (req, res, next) => {
