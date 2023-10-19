@@ -188,7 +188,6 @@ export const downloadItem = async (req, res, next) => {
         const itemsId = req.body?.itemsId ? req.body.itemsId : await Item.find({parent: null})
 
         const zip = AdmZip()
-        const files = []
 
         const items = await Item.find(
             {
@@ -215,15 +214,6 @@ export const downloadItem = async (req, res, next) => {
 
         const archivedFile = path.join('./dump', Date.now().toString()+".zip")
         zip.writeZip(archivedFile)
-        files.push(archivedFile)
-
-        // files.forEach((file) => {
-        //     fs.unlink(file, (error) => {
-        //         if (error) {
-        //             console.error(`Error deleting the file: ${err}`)
-        //         }
-        //     })
-        // })
 
         return res.download(archivedFile)
     } catch(error) {
