@@ -3,10 +3,10 @@ import Warning from '../model/warning.js'
 
 export const createWarning = async (req, res, next) => {
     try {
-        const { title, description } = req.body
+        const { name, description } = req.body
 
         const warning = await Warning.create({
-            title: title,
+            name: name,
             description: description
         })
     

@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const warningSchema = new mongoose.Schema({
-    title: {
+    name: {
         type: String,
         require: true,
     },
