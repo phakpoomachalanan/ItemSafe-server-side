@@ -9,10 +9,15 @@ import { moveItemFunc } from '../util/file.js'
 
 
 export const createFolder = async (req, res, next) => {
+    /*
+        Description: create folder both local and database
+        Parameter: name, description, type, size, filePath, warnings, tags, cover, parent, parentPath
+    */
     try {
         const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
-        await fsPromises.mkdir(filePath)
+        await fsPromises.mkdir(filePath) // make directory at local
 
+        // create item in database
         const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, true)
 
         return res.json(item)
@@ -22,10 +27,14 @@ export const createFolder = async (req, res, next) => {
 }
 
 export const uploadItem = async (req, res, next) => {
+    /*
+        Description: get uploaded item from user. if it is multiple files 
+        Parameter: item, name, description, size, filePath, warnings, tags, cover, parent, parentPath
+    */
     try {
-        const item  = req.file
+        const item  = req.file // item can be a single file or zip file
         const { name, description, filePath, warnings, cover, parent, parentPath, tags } = req.body
-        let itemRecord
+        let itemRecord // item from database
 
         if (!item) {
             next(createError(400, 'No file uploaded'))
@@ -35,19 +44,19 @@ export const uploadItem = async (req, res, next) => {
         const type = temp[temp.length-1]
 
         if (type === "zip") {
-            const noExt = temp[0]
-            const pathNoExt = path.join(parentPath, noExt)
-            const file = path.join(process.cwd(), '/dump', name)
+            const noExt = temp[0] // item name without extension
+            const pathNoExt = path.join(parentPath, noExt) // directory path
+            const file = path.join(process.cwd(), '/dump', name) // .zip file path
 
             var zipFile = new AdmZip(file)
-            zipFile.extractAllTo(pathNoExt)
+            zipFile.extractAllTo(pathNoExt) // extract files to local path
             fs.unlink(file, (error) => {
                 if (error) {
                     console.error(`Error deleting the file: ${err}`)
                 }
             })
 
-            itemRecord = await createItemFunc(noExt, description, "", bytesToSize(item.size), pathNoExt, warnings, tags, cover, parent, parentPath,true)
+            itemRecord = await createItemFunc(noExt, description, "", bytesToSize(item.size), pathNoExt, warnings, tags, cover, parent, parentPath, true)
             await craeteItemFromDirFunc(pathNoExt, itemRecord._id)
         } else {
             itemRecord = await createItemFunc(name, description, type, bytesToSize(item.size), filePath, warnings, tags, cover, parent, parentPath, true)
@@ -64,6 +73,10 @@ export const uploadItem = async (req, res, next) => {
 }
 
 export const moveItem = async (req, res, next) => {
+    /*
+        Description: move item
+        Parameter: itemId, destination
+    */
     try {
         const { itemId } = req.params
         const { destination } = req.body
@@ -87,7 +100,6 @@ export const moveItem = async (req, res, next) => {
                 }
             }
         )
-
         
         const newParent = await Item.findOneAndUpdate(
             {
@@ -99,7 +111,8 @@ export const moveItem = async (req, res, next) => {
                 }
             }
         )
-            
+        
+        // edit item record
         item.filePath = newPath
         item.parent = newParent._id
         item.parentPath = destination
