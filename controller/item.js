@@ -10,12 +10,12 @@ import { moveItemFunc } from '../util/file.js'
 
 export const createFolder = async (req, res, next) => {
     /*
-        Description: create folder both local and database
-        Parameter: name, description, type, size, filePath, warnings, tags, cover, parent, parentPath
+        Description: 
+            Create folder both within the database and locally.
     */
     try {
         const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
-        await fsPromises.mkdir(filePath) // make directory at local
+        await fsPromises.mkdir(filePath) // create a directory in the local file system
 
         // create item in database
         const item = await createItemFunc(name, description, type, size, filePath, warnings, tags, cover, parent, parentPath, true)
@@ -28,8 +28,9 @@ export const createFolder = async (req, res, next) => {
 
 export const uploadItem = async (req, res, next) => {
     /*
-        Description: get uploaded item from user. if it is multiple files 
-        Parameter: item, name, description, size, filePath, warnings, tags, cover, parent, parentPath
+        Description: 
+            Retrieves the uploaded item from the user. If the item consists of multiple files,
+            this function extracts them to the specified destination path.
     */
     try {
         const item  = req.file // item can be a single file or zip file
@@ -74,8 +75,8 @@ export const uploadItem = async (req, res, next) => {
 
 export const moveItem = async (req, res, next) => {
     /*
-        Description: move item
-        Parameter: itemId, destination
+        Description: 
+            Move specific item to destinnation both within the database and locally.
     */
     try {
         const { itemId } = req.params
@@ -120,8 +121,10 @@ export const moveItem = async (req, res, next) => {
         await item.save()
         
         if (item.type === "") {
+            // item is a directory
             await moveMultipleItemFunc(newPath, itemId)
         } else {
+            // item is a single file
             moveItemFunc(filePath, newPath)
         }
 
@@ -137,6 +140,10 @@ export const updateItem = async (req, res, next) => {
 }
 
 export const getAllItem = async (req, res, next) => {
+    /*
+        Description: 
+            Retrieves all item in database.
+    */
     try {
         const items = await Item.find({})
 
@@ -202,6 +209,11 @@ export const getAllItemName = async (req, res, next) => {
 }
 
 export const downloadItem = async (req, res, next) => {
+    /*
+        Description:
+            Download a specific item from server. If the item consists of multiple files,
+            this function archives them before send the item file as a downloadable response to the client.
+    */
     try {
         const itemsId = req.body?.itemsId ? req.body.itemsId : await Item.find({parent: null})
 
