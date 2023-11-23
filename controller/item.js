@@ -113,12 +113,17 @@ export const moveItem = async (req, res, next) => {
         )
         
         // edit item record
+        const filePath = item.filePath
         item.filePath = newPath
         item.parent = newParent._id
         item.parentPath = destination
         await item.save()
         
-        await moveMultipleItemFunc(newPath, itemId)
+        if (item.type === "") {
+            await moveMultipleItemFunc(newPath, itemId)
+        } else {
+            moveItemFunc(filePath, newPath)
+        }
 
         return res.json(item)
 
