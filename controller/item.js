@@ -139,6 +139,16 @@ export const updateItem = async (req, res, next) => {
 
 }
 
+export const verifyItems = async (req, res, next) => {
+    /*
+        Description: 
+            Verify item with file description.
+        Todo: 
+            - Alert item with wrong path, and children
+            - Update items size
+    */
+}
+
 export const getAllItem = async (req, res, next) => {
     /*
         Description: 
@@ -154,6 +164,10 @@ export const getAllItem = async (req, res, next) => {
 }
 
 export const getItem = async (req, res, next) => {
+    /*
+        Description: 
+            Retrieves specific item in database.
+    */
     try {        
         const { itemId } = req.params
         const item = await Item.findById(itemId).populate('warnings').populate('tags')
@@ -165,6 +179,12 @@ export const getItem = async (req, res, next) => {
 }
 
 export const getChildren = async (req, res, next) => {
+    /*
+        Description: 
+            Retrieves all items children in database.
+        Note:
+            Huh?
+    */
     try {        
         const { itemId } = req.params
         const item = Item.findById(itemId).populate('children')
@@ -176,6 +196,12 @@ export const getChildren = async (req, res, next) => {
 }
 
 export const getParent = async (req, res, next) => {
+    /*
+        Description: 
+            Retrieves items parent in database.
+        Note:
+            Huh?
+    */
     try {        
         const { itemId } = req.params
         const item = await Item.findById(itemId).populate('parent')
@@ -187,6 +213,10 @@ export const getParent = async (req, res, next) => {
 }
 
 export const getAllItemName = async (req, res, next) => {
+    /*
+        Description:
+            Retrieve every file in database
+    */
     try {
         const pipeline = [
             {
@@ -252,6 +282,12 @@ export const downloadItem = async (req, res, next) => {
 }
 
 export const deleteItem = async (req, res, next) => {
+    /*
+        Description: 
+            Delete specific item in database.
+        Todo:
+            - Also delete file in local file system
+    */
     try {
         const { itemId } = req.params
         const item = await Item.findById(itemId)
@@ -266,4 +302,14 @@ export const deleteItem = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
+}
+
+export const addField = async (req, res, next) => {
+    /*
+        Description: 
+            Add field to specific/all item in databsae.
+        Todo:
+            - Create new collection <- keep field which added to all item
+            - Add field to item
+    */
 }
