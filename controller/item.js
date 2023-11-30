@@ -33,7 +33,7 @@ export const uploadItem = async (req, res, next) => {
             this function extracts them to the specified destination path.
     */
     try {
-        const item  = req.file // item can be a single file or zip file
+        const item  = req.file // file can be a single file or zip file
         const { name, description, filePath, warnings, cover, parent, parentPath, tags } = req.body
         let itemRecord // item from database
 
@@ -166,7 +166,7 @@ export const getAllItem = async (req, res, next) => {
 export const getItem = async (req, res, next) => {
     /*
         Description: 
-            Retrieves specific item in database.
+            Retrieves specific item from database based on id.
     */
     try {        
         const { itemId } = req.params
@@ -198,7 +198,7 @@ export const getChildren = async (req, res, next) => {
 export const getParent = async (req, res, next) => {
     /*
         Description: 
-            Retrieves items parent in database.
+            Retrieves the parent of items from ithe database.
         Note:
             Huh?
     */
@@ -215,7 +215,7 @@ export const getParent = async (req, res, next) => {
 export const getAllItemName = async (req, res, next) => {
     /*
         Description:
-            Retrieve every file in database
+            Retrieve every item stored in the database.
     */
     try {
         const pipeline = [
@@ -298,7 +298,7 @@ export const deleteItem = async (req, res, next) => {
 
         await item.deleteOne()
 
-        return res.json({ message: `item: ${item.name} delete successfully` })
+        return res.json({message: `item: ${item.name} delete successfully`})
     } catch (error) {
         next(error)
     }
