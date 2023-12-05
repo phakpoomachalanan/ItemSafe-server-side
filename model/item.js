@@ -1,5 +1,11 @@
 import mongoose from "mongoose"
 
+/* 
+    Todo:
+        - Add integer size field
+        - Add owner field
+*/
+
 const itemSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -46,5 +52,5 @@ const itemSchema = new mongoose.Schema({
     }],
 })
 
-const Item = mongoose.models.item || mongoose.model("Item", itemSchema)
+const Item = mongoose.models.Item || mongoose.model("Item", itemSchema)
 export default Item

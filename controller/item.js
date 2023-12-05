@@ -12,6 +12,8 @@ export const createFolder = async (req, res, next) => {
     /*
         Description: 
             Create folder both within the database and locally.
+        Todo: 
+            If created folder does not have parent add it to account.heads
     */
     try {
         const { name, description, type, size, filePath, warnings, tags, cover, parent, parentPath } = req.body
@@ -307,7 +309,7 @@ export const deleteItem = async (req, res, next) => {
 export const addField = async (req, res, next) => {
     /*
         Description: 
-            Add field to specific/all item in databsae.
+            Add field to specific/all items in databsae.
         Todo:
             - Create new collection <- keep field which added to all item
             - Add field to item

@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 
+
 const warningSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -10,5 +11,5 @@ const warningSchema = new mongoose.Schema({
     }
 })
 
-const Warning = mongoose.models.warning || mongoose.model("Warning", warningSchema)
+const Warning = mongoose.models.Warning || mongoose.model("Warning", warningSchema)
 export default Warning

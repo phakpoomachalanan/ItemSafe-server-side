@@ -5,6 +5,7 @@ import { createWarning, getAllWarning, getWarning } from "../controller/warning.
 const router = Router()
 
 router.post("/create", createWarning)
+
 router.get("/", getAllWarning)
 router.get("/:warningId", getWarning)
 
