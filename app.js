@@ -12,6 +12,7 @@ import cors from 'cors'
 // Routes Import
 import homePage from './routes/home.js'
 import authRoutes from './routes/auth.js'
+import accountRoutes from './routes/account.js'
 import itemRoutes from './routes/item.js'
 import treeRoutes from './routes/tree.js'
 import warningRoutes from './routes/warning.js'
@@ -56,6 +57,7 @@ function createApp() {
     // routes
     app.use("/home", homePage)
     app.use("/auth", authRoutes)
+    app.use("/account", accountRoutes)
     app.use("/items", itemRoutes)
     app.use("/search", searchRoutes)
     app.use("/trees", treeRoutes)
