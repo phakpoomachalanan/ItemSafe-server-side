@@ -19,7 +19,7 @@ export const createAccount = async (req, res, next) => {
         })
         return res.json(newAccount)
     } catch (error) {
-        throw error
+        next(error)
     }
 }
 

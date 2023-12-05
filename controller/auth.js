@@ -3,8 +3,9 @@ import Account from '../model/account.js'
 import Item from "../model/item.js"
 
 
-export const login = async (username, password, otp) => {
+export const login = async (req, res, next) => {
     try {
+        const { username, password, otp } = req.body
         if (!(username && password && otp)) throw new Error("All field is required")
 
         const account = await Account.findOne({ username })
@@ -18,8 +19,8 @@ export const login = async (username, password, otp) => {
             }
         })
 
-        return items
+        return res.json(items)
     } catch (error) {
-        throw error
+        next(error)
     }
 }
