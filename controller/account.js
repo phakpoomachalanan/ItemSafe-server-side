@@ -1,14 +1,19 @@
 import Account from '../model/account.js'
 import bcrypt from "bcrypt"
+import { createError } from '../util/createError.js'
 
 
 export const createAccount = async (req, res, next) => {
     try {
         const { username, password, heads } = req.body
-        if (!(username && password)) throw new Error("All field is required")
+        if (!(username && password)) {
+            return next(createError(400, "All field is required"))
+        }
 
         const account = await Account.findOne({ username })
-        if (account) throw new Error("This username already registered")
+        if (account) {
+            return next(createError(400, "This username already registered"))
+        }
 
         const hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt())
 
