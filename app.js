@@ -19,6 +19,8 @@ import warningRoutes from './routes/warning.js'
 import tagRoutes from './routes/tag.js'
 import searchRoutes from './routes/search.js'
 import { intervalTriggerDump } from './util/triggerDump.js'
+import { errorMiddleware } from './middleware/errorHandler.js'
+import { authenticateUser } from './middleware/auth.js'
 
 
 function createApp() {
@@ -54,16 +56,18 @@ function createApp() {
     app.use(compression())
     app.use(cors())
 
-    // routes
-    app.use("/home", homePage)
-    app.use("/auth", authRoutes)
-    app.use("/account", accountRoutes)
-    app.use("/items", itemRoutes)
-    app.use("/search", searchRoutes)
-    app.use("/trees", treeRoutes)
-    app.use("/warnings", warningRoutes)
-    app.use("/tags", tagRoutes)
+    app.use("/api/v1/auth", authRoutes)
+    app.use(authenticateUser)
+    
+    app.use("/api/v1/home", homePage)
+    app.use("/api/v1/account", accountRoutes)
+    app.use("/api/v1/items", itemRoutes)
+    app.use("/api/v1/search", searchRoutes)
+    app.use("/api/v1/trees", treeRoutes)
+    app.use("/api/v1/warnings", warningRoutes)
+    app.use("/api/v1/tags", tagRoutes)
 
+    app.use(errorMiddleware)
     intervalTriggerDump()
 
     return app
