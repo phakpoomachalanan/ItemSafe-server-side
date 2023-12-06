@@ -8,6 +8,7 @@ const warningSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        deault: ""
     }
 })
 
